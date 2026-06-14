@@ -18,11 +18,14 @@ function SearchHistory({
 
           <button
             key={index}
+            type="button"
             onClick={()=>{
               setCity(item);
               getWeather(item);
             }}
             className="bg-slate-700 text-white px-3 py-2 rounded-lg text-sm"
+            aria-label={`search ${item}`}
+            title={`Search ${item}`}
           >
             {item}
           </button>
