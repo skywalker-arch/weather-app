@@ -18,9 +18,18 @@ function App(){
 
   const [error,setError] = useState("");
 
-  const [darkMode,setDarkMode] = useState(true);
+  const [darkMode,setDarkMode] = useState(() => {
+    try {
+      const v = localStorage.getItem("darkMode");
+      return v !== null ? JSON.parse(v) : true;
+    } catch { return true; }
+  });
 
-  const [unit,setUnit] = useState("C");
+  const [unit,setUnit] = useState(() => {
+    try {
+      return localStorage.getItem("unit") || "C";
+    } catch { return "C"; }
+  });
 
   const [searches,setSearches] = useState([]);
 
@@ -134,6 +143,19 @@ function App(){
   };
 
   const bgClass = getBgClass();
+
+  // Persist unit and theme
+  useEffect(()=>{
+    try{
+      localStorage.setItem("darkMode", JSON.stringify(darkMode));
+    } catch {}
+  },[darkMode]);
+
+  useEffect(()=>{
+    try{
+      localStorage.setItem("unit", unit);
+    } catch {}
+  },[unit]);
 
   // Geolocation: fetch weather by coordinates
   async function getWeatherByCoords(lat, lon){
