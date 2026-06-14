@@ -30,3 +30,14 @@
 /* make sure UI sits above */
 .backdrop-blur-md\/0 { backdrop-filter: blur(6px); }
 
+/* Focus styles for keyboard navigation */
+button:focus-visible, input:focus-visible {
+	outline: 3px solid rgba(99,102,241,0.9);
+	outline-offset: 2px;
+}
+
+/* Ensure interactive elements have sufficient contrast when focused */
+button[aria-pressed="true"] {
+	box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+

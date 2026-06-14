@@ -40,10 +40,12 @@ function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
 
             {addFavorite && (
               <button
+                type="button"
                 onClick={() => addFavorite(weather?.name)}
                 className="bg-slate-700 text-sky-200 px-3 py-2 rounded-lg"
                 aria-pressed={isFavorite}
-                aria-label="add to favorites"
+                aria-label={isFavorite ? "remove from favorites" : "add to favorites"}
+                title={isFavorite ? "Remove favorite" : "Add favorite"}
               >
                 {isFavorite ? "★" : "☆"}
               </button>

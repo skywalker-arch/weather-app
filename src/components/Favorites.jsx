@@ -10,17 +10,21 @@ function Favorites({ favorites = [], setCity, getWeather, removeFavorite }) {
         {favorites.map((city, i) => (
           <div key={i} className="flex items-center gap-2 bg-slate-700 px-3 py-2 rounded-lg">
             <button
+              type="button"
               onClick={() => { setCity(city); getWeather(city); }}
               className="text-white text-sm"
               aria-label={`load ${city}`}
+              title={`Load ${city}`}
             >
               {city}
             </button>
 
             <button
+              type="button"
               onClick={() => removeFavorite(city)}
               className="text-sky-200 text-sm"
               aria-label={`remove ${city} from favorites`}
+              title="Remove"
             >
               ✕
             </button>
