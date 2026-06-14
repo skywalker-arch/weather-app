@@ -171,7 +171,7 @@ function App(){
         )}
 
         {forecast.length > 0 && (
-          <Forecast forecast={forecast}/>
+          <Forecast forecast={forecast} unit={unit} />
         )}
 
       </div>
