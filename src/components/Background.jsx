@@ -1,4 +1,4 @@
-function Background({ weather }){
+function Background({ weather, reduceMotion = false }){
 
   const main = (weather?.weather?.[0]?.main || "").toLowerCase();
   const isDay = (() => {
@@ -8,6 +8,18 @@ function Background({ weather }){
     }
     return true;
   })();
+
+  // If user requested reduced motion or save-data, show simple static background
+  if (reduceMotion) {
+    const gradient = main.includes('clear') ? (isDay ? 'linear-gradient(180deg,#7dd3fc,#3b82f6)' : 'linear-gradient(180deg,#0f172a,#020617)')
+      : main.includes('cloud') ? 'linear-gradient(180deg,#cbd5e1,#94a3b8)'
+      : main.includes('rain') ? 'linear-gradient(180deg,#0ea5e9,#0369a1)'
+      : main.includes('snow') ? 'linear-gradient(180deg,#e6f0ff,#cfe9ff)' : 'linear-gradient(180deg,#0f172a,#0b1220)';
+
+    return (
+      <div className="weather-bg pointer-events-none absolute inset-0 z-0" style={{ background: gradient }} />
+    );
+  }
 
   return (
     <div className="weather-bg pointer-events-none absolute inset-0 z-0">

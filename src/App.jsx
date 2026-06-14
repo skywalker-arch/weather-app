@@ -41,6 +41,11 @@ function App(){
 
   const apiKey = import.meta.env.VITE_API_KEY;
 
+  const [saveData, setSaveData] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    try { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+  });
+
   useEffect(()=>{
 
     const saved =
@@ -53,6 +58,20 @@ function App(){
   useEffect(()=>{
     try{ localStorage.setItem("favorites", JSON.stringify(favorites)); } catch {}
   },[favorites]);
+
+  useEffect(()=>{
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && 'saveData' in conn) setSaveData(conn.saveData);
+    const handler = () => { if (conn && 'saveData' in conn) setSaveData(conn.saveData); };
+    try{ conn && conn.addEventListener && conn.addEventListener('change', handler); } catch {}
+    const mm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mmHandler = (e) => setPrefersReducedMotion(e.matches);
+    try{ mm && mm.addEventListener && mm.addEventListener('change', mmHandler); } catch {}
+    return () => {
+      try{ conn && conn.removeEventListener && conn.removeEventListener('change', handler); } catch {}
+      try{ mm && mm.removeEventListener && mm.removeEventListener('change', mmHandler); } catch {}
+    };
+  },[]);
 
   function addFavorite(city){
     if(!city) return;
@@ -250,7 +269,7 @@ function App(){
 
     <div className={`relative min-h-screen transition duration-500 ${bgClass}`}>
 
-      <Background weather={weather} />
+      <Background weather={weather} reduceMotion={prefersReducedMotion || saveData} />
 
       <div className="relative z-10 max-w-md mx-auto p-6">
 
