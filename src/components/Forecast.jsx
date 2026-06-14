@@ -29,7 +29,7 @@ function Forecast({ forecast, unit = "C" }) {
         {items.map((item, index) => (
           <div
             key={index}
-            className="min-w-28 bg-slate-700 p-3 rounded-xl text-center text-white shrink-0"
+            className="min-w-28 bg-slate-700/60 backdrop-blur p-3 rounded-xl text-center text-white shrink-0"
             role="group"
             aria-label={`forecast-${index}`}
           >

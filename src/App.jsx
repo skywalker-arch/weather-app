@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 
+import './App.css';
 import SearchBar from "./components/SearchBar";
 import WeatherCard from "./components/WeatherCard";
 import Forecast from "./components/Forecast";
 import Loader from "./components/Loader";
 import SearchHistory from "./components/SearchHistory";
 import Favorites from "./components/Favorites";
+import Background from "./components/Background";
 
 function App(){
 
@@ -246,9 +248,11 @@ function App(){
 
   return (
 
-    <div className={`min-h-screen transition duration-500 ${bgClass}`}>
+    <div className={`relative min-h-screen transition duration-500 ${bgClass}`}>
 
-      <div className="max-w-md mx-auto p-6">
+      <Background weather={weather} />
+
+      <div className="relative z-10 max-w-md mx-auto p-6">
 
           <div className="flex justify-between mb-6">
 
