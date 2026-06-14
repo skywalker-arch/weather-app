@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 
-function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
+function WeatherCard({ weather, unit, addFavorite, isFavorite, slowNetwork = false }) {
 
   const temp = (c) => (unit === "C" ? Math.round(c) : Math.round(c * 9 / 5 + 32));
 
@@ -33,11 +33,19 @@ function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {weather?.weather?.[0]?.icon && (
+            {weather?.weather?.[0]?.icon && !slowNetwork && (
               <img
                 src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
                 alt={weather?.weather?.[0]?.description || "weather icon"}
                 className="w-24 h-24"
+              />
+            )}
+
+            {weather?.weather?.[0]?.icon && slowNetwork && (
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+                alt={weather?.weather?.[0]?.description || "weather icon"}
+                className="w-12 h-12"
               />
             )}
 

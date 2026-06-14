@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-function Forecast({ forecast, unit = "C" }) {
+function Forecast({ forecast, unit = "C", slowNetwork = false }) {
 
   const [detailed, setDetailed] = useState(false);
 
   const temp = (c) => (unit === "C" ? Math.round(c) : Math.round(c * 9 / 5 + 32));
 
-  const items = detailed ? forecast.slice(0, 8) : forecast.slice(0, 6);
+  const items = detailed ? forecast.slice(0, 8) : (slowNetwork ? forecast.slice(0,4) : forecast.slice(0,6));
 
   return (
     <div className="mt-6">
@@ -35,7 +35,7 @@ function Forecast({ forecast, unit = "C" }) {
           >
             <p className="text-sm mb-1">{item.dt_txt.split(" ")[0]}</p>
             <p className="text-xs text-sky-100/80 mb-1">{item.dt_txt.split(" ")[1].slice(0,5)}</p>
-            {item?.weather?.[0]?.icon && (
+            {!slowNetwork && item?.weather?.[0]?.icon && (
               <img
                 src={`https://openweathermap.org/img/wn/${item.weather[0].icon}.png`}
                 className="mx-auto"

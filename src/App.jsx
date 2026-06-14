@@ -45,6 +45,13 @@ function App(){
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
     try { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
   });
+  const [slowNetwork, setSlowNetwork] = useState(() => {
+    try {
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const type = conn?.effectiveType || '';
+      return type === '2g' || type === 'slow-2g';
+    } catch { return false; }
+  });
 
   useEffect(()=>{
 
@@ -62,7 +69,7 @@ function App(){
   useEffect(()=>{
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (conn && 'saveData' in conn) setSaveData(conn.saveData);
-    const handler = () => { if (conn && 'saveData' in conn) setSaveData(conn.saveData); };
+    const handler = () => { if (conn && 'saveData' in conn) setSaveData(conn.saveData); if (conn && 'effectiveType' in conn) setSlowNetwork(conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g'); };
     try{ conn && conn.addEventListener && conn.addEventListener('change', handler); } catch {}
     const mm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     const mmHandler = (e) => setPrefersReducedMotion(e.matches);
@@ -269,7 +276,7 @@ function App(){
 
     <div className={`relative min-h-screen transition duration-500 ${bgClass}`}>
 
-      <Background weather={weather} reduceMotion={prefersReducedMotion || saveData} />
+      <Background weather={weather} reduceMotion={prefersReducedMotion || saveData || slowNetwork} />
 
       <div className="relative z-10 max-w-md mx-auto p-6">
 
@@ -338,11 +345,12 @@ function App(){
             unit={unit}
             addFavorite={addFavorite}
             isFavorite={favorites.includes(weather?.name)}
+            slowNetwork={slowNetwork}
           />
         )}
 
         {forecast.length > 0 && (
-          <Forecast forecast={forecast} unit={unit} />
+          <Forecast forecast={forecast} unit={unit} slowNetwork={slowNetwork} />
         )}
 
       </div>
