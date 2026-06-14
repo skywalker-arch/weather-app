@@ -24,7 +24,7 @@ function App(){
 
   const [searches,setSearches] = useState([]);
 
-  const apiKey = "92f7ffa03f9e9af53314a2ca078ff1ed";
+  const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(()=>{
 
@@ -54,28 +54,32 @@ function App(){
         `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${apiKey}&units=metric`;
 
       const weatherResponse = await fetch(weatherUrl);
-
       const weatherData = await weatherResponse.json();
 
-      const forecastResponse = await fetch(forecastUrl);
+      if (!weatherResponse.ok) {
+        setError(weatherData.message || "City not found");
+        setWeather(null);
+        setForecast([]);
+        setLoading(false);
+        return;
+      }
 
+      const forecastResponse = await fetch(forecastUrl);
       const forecastData = await forecastResponse.json();
 
-      if(weatherData.cod === "404"){
-
-        setError("City not found");
-
-        setWeather(null);
-
-      } else {
-
+      if (!forecastResponse.ok) {
+        // If forecast failed but current weather succeeded, still show weather
         setWeather(weatherData);
-
-        setForecast(forecastData.list.slice(0,6));
-
+        setForecast([]);
         saveSearch(searchCity);
-
+        setLoading(false);
+        return;
       }
+
+      // At this point both responses are OK
+      setWeather(weatherData);
+      setForecast(Array.isArray(forecastData.list) ? forecastData.list.slice(0,6) : []);
+      saveSearch(searchCity);
 
     }
 
