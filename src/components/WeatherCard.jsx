@@ -21,7 +21,7 @@ function WeatherCard({ weather, unit }) {
       className="mt-8"
     >
 
-      <div className="bg-gradient-to-br from-sky-600 via-indigo-600 to-slate-700 rounded-2xl p-6 shadow-xl text-white">
+      <div className="bg-linear-to-br from-sky-600 via-indigo-600 to-slate-700 rounded-2xl p-6 shadow-xl text-white">
 
         <div className="flex items-center justify-between mb-4">
           <div className="text-left">

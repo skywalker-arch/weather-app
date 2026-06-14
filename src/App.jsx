@@ -36,7 +36,6 @@ function App(){
   },[]);
 
   async function getWeather(searchCity){
-
     if(searchCity === ""){
       return;
     }
@@ -95,31 +94,32 @@ function App(){
 
   }
 
-  function saveSearch(city){
+  const getBgClass = () => {
+    if (!weather) return darkMode ? "bg-slate-900" : "bg-sky-100";
 
-    let recent =
-      JSON.parse(localStorage.getItem("recent")) || [];
+    const main = (weather?.weather?.[0]?.main || "").toLowerCase();
 
-    recent.unshift(city);
+    const isDay = (() => {
+      if (typeof weather?.dt === "number" && typeof weather?.sys?.sunrise === "number" && typeof weather?.sys?.sunset === "number") {
+        return weather.dt >= weather.sys.sunrise && weather.dt < weather.sys.sunset;
+      }
+      return true;
+    })();
 
-    recent = [...new Set(recent)].slice(0,5);
+    if (main.includes("cloud")) return isDay ? "bg-linear-to-br from-gray-400 via-blue-500 to-gray-700" : "bg-linear-to-br from-gray-700 via-slate-900 to-black";
+    if (main.includes("rain") || main.includes("drizzle")) return "bg-linear-to-br from-blue-800 via-indigo-700 to-slate-900";
+    if (main.includes("thunder")) return "bg-linear-to-br from-purple-800 via-indigo-900 to-black";
+    if (main.includes("snow")) return "bg-linear-to-br from-blue-200 via-white to-slate-400";
+    if (main.includes("clear")) return isDay ? "bg-linear-to-br from-sky-400 via-sky-600 to-indigo-700" : "bg-linear-to-br from-indigo-900 via-slate-900 to-black";
 
-    localStorage.setItem(
-      "recent",
-      JSON.stringify(recent)
-    );
+    return darkMode ? "bg-slate-900" : "bg-sky-100";
+  };
 
-    setSearches(recent);
-
-  }
+  const bgClass = getBgClass();
 
   return (
 
-    <div className={
-      darkMode
-      ? "min-h-screen bg-slate-900 transition duration-500"
-      : "min-h-screen bg-sky-100 transition duration-500"
-    }>
+    <div className={`min-h-screen transition duration-500 ${bgClass}`}>
 
       <div className="max-w-md mx-auto p-6">
 
