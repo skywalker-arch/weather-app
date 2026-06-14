@@ -34,7 +34,9 @@ function App(){
     } catch { return "C"; }
   });
 
-  const [searches,setSearches] = useState([]);
+  const [searches,setSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("recent")) || []; } catch (e) { return []; }
+  });
   const [favorites, setFavorites] = useState(() => {
     try { return JSON.parse(localStorage.getItem("favorites")) || []; } catch { return []; }
   });
@@ -53,30 +55,25 @@ function App(){
     } catch { return false; }
   });
 
-  useEffect(()=>{
-
-    const saved =
-      JSON.parse(localStorage.getItem("recent")) || [];
-
-    setSearches(saved);
-
-  },[]);
+  
 
   useEffect(()=>{
-    try{ localStorage.setItem("favorites", JSON.stringify(favorites)); } catch {}
+    try{ localStorage.setItem("favorites", JSON.stringify(favorites)); } catch (e) { /* ignore */ }
   },[favorites]);
 
   useEffect(()=>{
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (conn && 'saveData' in conn) setSaveData(conn.saveData);
-    const handler = () => { if (conn && 'saveData' in conn) setSaveData(conn.saveData); if (conn && 'effectiveType' in conn) setSlowNetwork(conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g'); };
-    try{ conn && conn.addEventListener && conn.addEventListener('change', handler); } catch {}
+    const handler = () => {
+      if (conn && 'saveData' in conn) setSaveData(conn.saveData);
+      if (conn && 'effectiveType' in conn) setSlowNetwork(conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g');
+    };
+    try{ conn && conn.addEventListener && conn.addEventListener('change', handler); } catch (e) { /* ignore */ }
     const mm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     const mmHandler = (e) => setPrefersReducedMotion(e.matches);
-    try{ mm && mm.addEventListener && mm.addEventListener('change', mmHandler); } catch {}
+    try{ mm && mm.addEventListener && mm.addEventListener('change', mmHandler); } catch (e) { /* ignore */ }
     return () => {
-      try{ conn && conn.removeEventListener && conn.removeEventListener('change', handler); } catch {}
-      try{ mm && mm.removeEventListener && mm.removeEventListener('change', mmHandler); } catch {}
+      try{ conn && conn.removeEventListener && conn.removeEventListener('change', handler); } catch (e) { /* ignore */ }
+      try{ mm && mm.removeEventListener && mm.removeEventListener('change', mmHandler); } catch (e) { /* ignore */ }
     };
   },[]);
 
@@ -196,13 +193,13 @@ function App(){
   useEffect(()=>{
     try{
       localStorage.setItem("darkMode", JSON.stringify(darkMode));
-    } catch {}
+    } catch (e) { /* ignore */ }
   },[darkMode]);
 
   useEffect(()=>{
     try{
       localStorage.setItem("unit", unit);
-    } catch {}
+    } catch (e) { /* ignore */ }
   },[unit]);
 
   // Geolocation: fetch weather by coordinates
