@@ -94,6 +94,24 @@ function App(){
 
   }
 
+  function saveSearch(city){
+
+    let recent =
+      JSON.parse(localStorage.getItem("recent")) || [];
+
+    recent.unshift(city);
+
+    recent = [...new Set(recent)].slice(0,5);
+
+    localStorage.setItem(
+      "recent",
+      JSON.stringify(recent)
+    );
+
+    setSearches(recent);
+
+  }
+
   const getBgClass = () => {
     if (!weather) return darkMode ? "bg-slate-900" : "bg-sky-100";
 
