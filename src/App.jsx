@@ -135,31 +135,110 @@ function App(){
 
   const bgClass = getBgClass();
 
+  // Geolocation: fetch weather by coordinates
+  async function getWeatherByCoords(lat, lon){
+    try{
+      setLoading(true);
+      setError("");
+
+      const weatherUrl =
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+      const forecastUrl =
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+      const weatherResponse = await fetch(weatherUrl);
+      const weatherData = await weatherResponse.json();
+
+      if (!weatherResponse.ok) {
+        setError(weatherData.message || "Location not found");
+        setWeather(null);
+        setForecast([]);
+        setLoading(false);
+        return;
+      }
+
+      const forecastResponse = await fetch(forecastUrl);
+      const forecastData = await forecastResponse.json();
+
+      if (!forecastResponse.ok) {
+        setWeather(weatherData);
+        setForecast([]);
+        saveSearch(weatherData.name || "");
+        setLoading(false);
+        return;
+      }
+
+      setWeather(weatherData);
+      setCity(weatherData.name || "");
+      setForecast(Array.isArray(forecastData.list) ? forecastData.list.slice(0,6) : []);
+      if (weatherData.name) saveSearch(weatherData.name);
+
+    }
+    catch(err){
+      console.error(err);
+      setError("Something went wrong");
+    }
+    setLoading(false);
+  }
+
+  function locateMe(){
+    if (!navigator.geolocation){
+      setError("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        getWeatherByCoords(latitude, longitude);
+      },
+      (err) => {
+        console.error(err);
+        setError("Unable to retrieve your location");
+        setLoading(false);
+      }
+    );
+  }
+
   return (
 
     <div className={`min-h-screen transition duration-500 ${bgClass}`}>
 
       <div className="max-w-md mx-auto p-6">
 
-        <div className="flex justify-between mb-6">
+          <div className="flex justify-between mb-6">
 
-          <button
-            onClick={()=>setDarkMode(!darkMode)}
-            className="bg-slate-700 text-white px-4 py-2 rounded-xl"
-          >
-            Mode
-          </button>
+            <div className="flex gap-3">
+              <button
+                onClick={()=>setDarkMode(!darkMode)}
+                className="bg-slate-700 text-white px-4 py-2 rounded-xl"
+                aria-label="toggle theme"
+              >
+                Mode
+              </button>
 
-          <button
-            onClick={()=>
-              setUnit(unit === "C" ? "F" : "C")
-            }
-            className="bg-sky-500 text-white px-4 py-2 rounded-xl"
-          >
-            °{unit}
-          </button>
+              <button
+                onClick={locateMe}
+                className="bg-sky-600 text-white px-4 py-2 rounded-xl"
+                aria-label="use my location"
+              >
+                Locate
+              </button>
+            </div>
 
-        </div>
+            <button
+              onClick={()=>
+                setUnit(unit === "C" ? "F" : "C")
+              }
+              className="bg-sky-500 text-white px-4 py-2 rounded-xl"
+              aria-label="toggle units"
+            >
+              °{unit}
+            </button>
+
+          </div>
 
         <SearchBar
           city={city}
