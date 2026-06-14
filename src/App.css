@@ -41,3 +41,13 @@ button[aria-pressed="true"] {
 	box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
 }
 
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.sun, .clouds .cloud, .rain .drops, .snow .flake, .thunder .bolt {
+		animation: none !important;
+	}
+	.sun { transform: none !important; }
+	.clouds .cloud { opacity: 0.9; }
+	.weather-bg { will-change: auto; }
+}
+

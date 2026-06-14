@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
 
@@ -14,10 +14,13 @@ function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
     ? formatTime(weather.dt, weather.timezone)
     : "--";
 
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? {} : { opacity: 0, y: 30 }}
+      animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
+      transition={reduceMotion ? { duration: 0 } : {}}
       className="mt-8"
     >
 
