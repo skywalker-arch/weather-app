@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-function WeatherCard({ weather, unit }) {
+function WeatherCard({ weather, unit, addFavorite, isFavorite }) {
 
   const temp = (c) => (unit === "C" ? Math.round(c) : Math.round(c * 9 / 5 + 32));
 
@@ -29,13 +29,26 @@ function WeatherCard({ weather, unit }) {
             <p className="text-sm text-sky-100/80">Local time: {localTime}</p>
           </div>
 
-          {weather?.weather?.[0]?.icon && (
-            <img
-              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
-              alt={weather?.weather?.[0]?.description || "weather icon"}
-              className="w-24 h-24"
-            />
-          )}
+          <div className="flex items-center gap-3">
+            {weather?.weather?.[0]?.icon && (
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
+                alt={weather?.weather?.[0]?.description || "weather icon"}
+                className="w-24 h-24"
+              />
+            )}
+
+            {addFavorite && (
+              <button
+                onClick={() => addFavorite(weather?.name)}
+                className="bg-slate-700 text-sky-200 px-3 py-2 rounded-lg"
+                aria-pressed={isFavorite}
+                aria-label="add to favorites"
+              >
+                {isFavorite ? "★" : "☆"}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex items-end justify-center gap-6">

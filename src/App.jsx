@@ -5,6 +5,7 @@ import WeatherCard from "./components/WeatherCard";
 import Forecast from "./components/Forecast";
 import Loader from "./components/Loader";
 import SearchHistory from "./components/SearchHistory";
+import Favorites from "./components/Favorites";
 
 function App(){
 
@@ -32,6 +33,9 @@ function App(){
   });
 
   const [searches,setSearches] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("favorites")) || []; } catch { return []; }
+  });
 
   const apiKey = import.meta.env.VITE_API_KEY;
 
@@ -43,6 +47,22 @@ function App(){
     setSearches(saved);
 
   },[]);
+
+  useEffect(()=>{
+    try{ localStorage.setItem("favorites", JSON.stringify(favorites)); } catch {}
+  },[favorites]);
+
+  function addFavorite(city){
+    if(!city) return;
+    setFavorites(prev => {
+      const next = [city, ...prev.filter(c => c !== city)].slice(0,10);
+      return next;
+    });
+  }
+
+  function removeFavorite(city){
+    setFavorites(prev => prev.filter(c => c !== city));
+  }
 
   async function getWeather(searchCity){
     if(searchCity === ""){
@@ -274,6 +294,13 @@ function App(){
           getWeather={getWeather}
         />
 
+        <Favorites
+          favorites={favorites}
+          setCity={setCity}
+          getWeather={getWeather}
+          removeFavorite={removeFavorite}
+        />
+
         {loading && <Loader/>}
 
         {error && (
@@ -286,6 +313,8 @@ function App(){
           <WeatherCard
             weather={weather}
             unit={unit}
+            addFavorite={addFavorite}
+            isFavorite={favorites.includes(weather?.name)}
           />
         )}
 
