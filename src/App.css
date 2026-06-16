@@ -49,5 +49,6 @@ button[aria-pressed="true"] {
 	.sun { transform: none !important; }
 	.clouds .cloud { opacity: 0.9; }
 	.weather-bg { will-change: auto; }
+    
 }
 
