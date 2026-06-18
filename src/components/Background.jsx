@@ -13,7 +13,6 @@ function Background({ weather, reduceMotion = false }){
   if (reduceMotion) {
     const gradient = main.includes('clear') ? (isDay ? 'linear-gradient(180deg,#7dd3fc,#3b82f6)' : 'linear-gradient(180deg,#0f172a,#020617)')
       : main.includes('cloud') ? 'linear-gradient(180deg,#cbd5e1,#94a3b8)'
-      
       : main.includes('rain') ? 'linear-gradient(180deg,#0ea5e9,#0369a1)'
       : main.includes('snow') ? 'linear-gradient(180deg,#e6f0ff,#cfe9ff)' : 'linear-gradient(180deg,#0f172a,#0b1220)';
 
