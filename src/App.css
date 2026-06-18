@@ -46,6 +46,7 @@ button[aria-pressed="true"] {
 	.sun, .clouds .cloud, .rain .drops, .snow .flake, .thunder .bolt {
 		animation: none !important;
 	}
+	
 	.sun { transform: none !important; }
 	.clouds .cloud { opacity: 0.9; }
 	.weather-bg { will-change: auto; }
