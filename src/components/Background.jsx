@@ -26,6 +26,7 @@ function Background({ weather, reduceMotion = false }){
       {/* Clear */}
       
       {main.includes('clear') && (
+      uui
         <div className={`sun-wrap ${isDay ? 'day' : 'night'}`}>
           <div className="sun" />
         </div>
