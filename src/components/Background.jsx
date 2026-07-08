@@ -2,6 +2,7 @@ function Background({ weather, reduceMotion = false }){
 
   const main = (weather?.weather?.[0]?.main || "").toLowerCase();
   const isDay = (() => {
+    
     if (!weather) return true;
     if (typeof weather.dt === 'number' && typeof weather.sys?.sunrise === 'number' && typeof weather.sys?.sunset === 'number') {
       return weather.dt >= weather.sys.sunrise && weather.dt < weather.sys.sunset;
@@ -23,7 +24,7 @@ function Background({ weather, reduceMotion = false }){
 
   return (
     <div className="weather-bg pointer-events-none absolute inset-0 z-0">
-      
+
       {/* Clear */}
       
       {main.includes('clear') && (
